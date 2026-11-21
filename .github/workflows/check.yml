@@ -1,0 +1,23 @@
+name: Build ACE Music package
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/package.py --output dist/acemusic-chatgpt.tar.gz
+      - run: python scripts/verify.py dist/acemusic-chatgpt.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: acemusic-chatgpt
+          path: dist/acemusic-chatgpt.tar.gz
